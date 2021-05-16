@@ -1,0 +1,86 @@
+package myzik;
+
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Time;
+
+public class Myzik {
+//  Database credentials
+      static final String DB_URL = "jdbc:postgresql://127.0.0.1:5432/forMusic";
+      static final String USER = "postgres";
+      static final String PASS = "1";
+    public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException, SQLException {
+System.out.println("Testing connection to PostgreSQL JDBC");
+ 
+	try {
+		Class.forName("org.postgresql.Driver");
+	} catch (ClassNotFoundException e) {
+		System.out.println("PostgreSQL JDBC Driver is not found. Include it in your library path ");
+		e.printStackTrace();
+		return;
+	}
+ 
+	System.out.println("PostgreSQL JDBC Driver successfully connected");
+	Connection connection = null;
+        Statement statement = null;
+
+ 
+	try {
+		connection = DriverManager
+		.getConnection(DB_URL, USER, PASS);
+ 	if (connection != null) { 
+            String selectTableSQL = "SELECT \"Name\", \"Time\", \"Zanr\", \"Avtor\", \"Ispolnitel\", \"Statistika\"\n" +"  FROM \"Music\";";
+            
+            String insertTableSQL = "INSERT INTO \"Music\"("+"\n"+
+            "\"Name\", \"Time\", \"Zanr\", \"Avtor\", \"Ispolnitel\", \"Statistika\")"+"\n"+
+            "VALUES ('Name', '00:00:00.0', 'Zanr', 'Avtor', '1', '531');";
+            try {
+	
+	statement = connection.createStatement();
+            
+        statement.executeUpdate(insertTableSQL);
+
+	// выбираем данные с БД
+	ResultSet rs = statement.executeQuery(selectTableSQL);
+
+	// И если что то было получено то цикл while сработает   
+	while (rs.next()) {
+		String userid = rs.getString("Name");
+		String username = rs.getString("Zanr");
+                Integer i = rs.getInt("Ispolnitel");
+                Integer r = rs.getInt("Statistika");
+                Time t = rs.getTime("Time");
+                String s = rs.getString("Name");
+                String d = rs.getString("Zanr");
+		System.out.println("userid : " + userid +  i +  r +  t);
+	        System.out.println("username : " + username);
+                
+	}
+        
+} catch (SQLException e) {
+	System.out.println(e.getMessage());
+}
+		System.out.println("You successfully connected to database now");
+	} else {
+		System.out.println("Failed to make connection to database");
+	}
+
+	} catch (SQLException e) {
+		System.out.println("Connection Failed");
+		e.printStackTrace();
+		return;
+        }
+       
+      
+
+    }
+    
+}
+
+https://devcolibri.com/%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-%D0%B1%D0%B4-mysql-postgresql-%D1%81-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E-jdbc-%D0%B4%D1%80%D0%B0%D0%B9%D0%B2%D0%B5%D1%80%D0%B0/
